@@ -29,7 +29,7 @@ const body      = $("body");
 const createBoard = (cellSize) => {
 
   //reset
-body.empty();
+//body.empty();
 
 // FINAL VARIABLES
 
@@ -38,17 +38,15 @@ const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0
 const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
   // colors
-const cellColorOne  = "rgb(9, 158, 123)";
+const cellColorOne  = "rgb(0,255,0)";
 const cellColorTwo  = "rgb(217, 177, 56)";
 const backColor     = "rgb(0, 0, 0)";
 
-console.log(vw);
-console.log(vh);
 
 // SIZING
 const unit          = cellSize + 2; // plus 2px for margins
-const rowCellsAmt   = Math.round(((2 * vw) / 3) / unit);
-const rowAmt        = Math.round(((2 * vh) / 3) / unit);
+const rowCellsAmt   = Math.round(vw / unit);
+const rowAmt        = Math.round(vh / unit);
 const rowWidth      = rowCellsAmt * unit;
 const cellNum       = rowCellsAmt * rowAmt;
 
@@ -90,29 +88,53 @@ grid.css("width", `${cellSize}px`);
 grid.css("height", `${cellSize}px`);
 grid.css("float", "left");
 grid.css("margin", "1px");
-
+grid.css("border-radius", unit / 5);
+grid.css("position", "relative");
+grid.css("z-index", "100");
 
 
 
 // COOL GRID FUNCTIONS
 
   // Hover Function
-let counter = 0;
-grid.hover(function(){
-    const elem = $(this);
-    const coords = getCoordinates(elem);
-    const state = gridArr[coords[0]][coords[1]].state
-    if (counter % (2 * cellNum) < cellNum && state == 0){
-      elem.css("background-color", cellColorTwo);
-      counter++
-    } else if (counter % (2 * cellNum) >= cellNum && state == 1){
-      elem.css("background-color", cellColorOne);
-      counter++
-    }
-  });
+// let counter = 0;
+// grid.hover(function(){
+//     const elem = $(this);
+//     const coords = getCoordinates(elem);
+//     const state = gridArr[coords[0]][coords[1]].state
+//
+//     console.log(state);
+//     if (counter % (2 * cellNum) < cellNum && state == 0){
+//       elem.css("background-color", cellColorTwo);
+//       gridArr[coords[0]][coords[1]].toggle();
+//       counter++;
+//     } else if (counter % (2 * cellNum) >= cellNum && state == 1){
+//       elem.css("background-color", cellColorOne);
+//       gridArr[coords[0]][coords[1]].toggle();
+//       counter++;
+//     }
+//   });
+
+  // Delete Function
+  let counter = 0;
+  grid.hover(function(){
+      const elem = $(this);
+      const coords = getCoordinates(elem);
+      const state = gridArr[coords[0]][coords[1]].state
+
+      if (counter < cellNum && state == 0){
+        elem.css("background-color", "transparent");
+        gridArr[coords[0]][coords[1]].toggle();
+        counter++;
+      }
+      if (counter > cellNum){
+        $("#habitat").empty();
+        $("#habitat").remove();
+      }
+    });
 
 
 }
 
 
-createBoard(5);
+createBoard(50);
