@@ -23,55 +23,96 @@ Have your tomagotchi give birth to baby tomagotchi...
 Add an excercise() method to your tomagotchi, that affects certain properties
 Add anything you can think of... use your imagination!
 */
+const startTime = new Date();
+const body      = $("body");
 
+const createBoard = (cellSize) => {
+
+  //reset
+body.empty();
 
 // FINAL VARIABLES
-const body      = $("body");
-const startTime = new Date();
-const unit      = "5px";
-const cellNum   = 4970;
-const cellColorOne = "rgb(9, 158, 123)";
-const cellColorTwo = "rgb(217, 177, 56)";
-const backColor = "rgb(195, 33, 210)";
+
+  // tools
+const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+  // colors
+const cellColorOne  = "rgb(9, 158, 123)";
+const cellColorTwo  = "rgb(217, 177, 56)";
+const backColor     = "rgb(0, 0, 0)";
+
+console.log(vw);
+console.log(vh);
+
+// SIZING
+const unit          = cellSize + 2; // plus 2px for margins
+const rowCellsAmt   = Math.round(((2 * vw) / 3) / unit);
+const rowAmt        = Math.round(((2 * vh) / 3) / unit);
+const rowWidth      = rowCellsAmt * unit;
+const cellNum       = rowCellsAmt * rowAmt;
 
 
 // HELPER FUNCTIONS
-
-
+const getCoordinates = (elem) => {
+  const elemX = elem.attr('id').split(",")[0];
+  const elemY = elem.attr('id').split(",")[1];
+  return([elemX,elemY]);
+}
 
 // SETUP BOARD
 
 body.css("background-color", backColor);
 
-  // habitat
+  // habitat creation
 body.append("<div id='habitat'></div> ");
 const habitat = $("#habitat");
-habitat.css("width","500px");
-habitat.css("height","500px");
+habitat.css("width",`${rowWidth}px`);
 habitat.css("margin", "0 auto");
 
-  // grid
-for (let i = 1; i <= cellNum; i++){
-    const x = Math.ceil(i / 71);
-    const y = i % 71;
-    habitat.append(`<div class="grid" id="${x}${y}"></div>`);
+  // grid creation
+const gridArr = [];
+for (let i = 0; i < rowAmt; i++){
+  gridArr.push([]);
 }
+for (let i = 0; i < cellNum; i++){
+    const row = Math.floor(i / rowCellsAmt);
+    const col = i % rowCellsAmt;
+    habitat.append(`<div class="grid" id="${row},${col}"></div>`);
+    gridArr[row].push(new GridCell(row, col));
+}
+
+
+  // style grid
 const grid = $(".grid")
 grid.css("background-color", cellColorOne);
-grid.css("width", unit);
-grid.css("height", unit);
+grid.css("width", `${cellSize}px`);
+grid.css("height", `${cellSize}px`);
 grid.css("float", "left");
 grid.css("margin", "1px");
+
+
+
+
+// COOL GRID FUNCTIONS
+
+  // Hover Function
 let counter = 0;
 grid.hover(function(){
     const elem = $(this);
-    const color = elem.css("background-color");
-    console.log(color)
-    if (counter % (2 * cellNum) < cellNum && color == cellColorOne){
+    const coords = getCoordinates(elem);
+    const state = gridArr[coords[0]][coords[1]].state
+    if (counter % (2 * cellNum) < cellNum && state == 0){
       elem.css("background-color", cellColorTwo);
       counter++
-    } else if (counter % (2 * cellNum) >= cellNum && color == cellColorTwo){
+    } else if (counter % (2 * cellNum) >= cellNum && state == 1){
       elem.css("background-color", cellColorOne);
       counter++
     }
   });
+
+
+}
+
+
+createBoard(5);
